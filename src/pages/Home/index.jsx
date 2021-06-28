@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Carousel, WingBlank, Flex, Grid } from "antd-mobile";
 
 import { httpGet } from "../../utils/axios/http";
-import { HomeAPI } from "../../api";
+import { HomeAPI, AreaAPI } from "../../api";
+
+import SearchHeader from "../../components/SearchHeader";
 
 import "./index.css";
 
@@ -26,7 +28,7 @@ const navList = [
   },
   {
     title: "地图找房",
-    path: "/findhouse",
+    path: "/mapfindhouse",
     imgSrc: nav3,
   },
   {
@@ -37,6 +39,46 @@ const navList = [
 ];
 
 function Home(props) {
+  //#region 获取定位信息
+  // 定位数据
+  const [amap, setAmap] = useState({});
+  // 获取定位信息
+  const getAmap = () => {
+    window.AMap.plugin("AMap.Geolocation", function () {
+      let geolocation = new window.AMap.Geolocation({
+        enableHighAccuracy: true, //是否使用高精度定位，默认:true
+        timeout: 10000, //超过10秒后停止定位，默认：5s
+        GeoLocationFirst: true,
+      });
+
+      geolocation.getCityInfo(function (status, result) {
+        console.log("getCityInfo", status, result);
+        if (status === "complete") {
+          setAmap(result);
+        }
+      });
+    });
+  };
+  //#endregion
+
+  //#region 根据城市名称查询该城市信息
+  // 当前城市信息
+  const [info, setInfo] = useState(null);
+  // 获取数据
+  useEffect(() => {
+    if (amap.city) {
+      httpGet(AreaAPI.info, { name: amap.city })
+        .then(res => {
+          console.log("info", res);
+          if (res.status === 200) {
+            setInfo(res.body);
+          }
+        })
+        .catch(err => console.log(err));
+    }
+  }, [amap]);
+  //#endregion
+
   //#region 轮播图
   // 数据
   const [swiperData, setSwiperData] = useState([]);
@@ -76,9 +118,9 @@ function Home(props) {
   // 数据
   const [groupData, setGroupData] = useState([]);
   // 获取数据
-  const getGroups = () => {
+  const getGroups = areaId => {
     httpGet(HomeAPI.groups, {
-      area: "AREA|88cff55c-aaa4-e2e0",
+      area: areaId,
     })
       .then(res => {
         console.log("groups", res);
@@ -114,8 +156,8 @@ function Home(props) {
   // 数据
   const [newsData, setNewsData] = useState([]);
   // 获取数据
-  const getNews = () => {
-    httpGet(HomeAPI.news, { area: "AREA|88cff55c-aaa4-e2e0" })
+  const getNews = areaId => {
+    httpGet(HomeAPI.news, { area: areaId })
       .then(res => {
         console.log("news", res);
         if (res.status === 200) {
@@ -144,13 +186,22 @@ function Home(props) {
   //#endregion
 
   useEffect(() => {
+    getAmap();
     getSwiper();
-    getGroups();
-    getNews();
   }, []);
+
+  useEffect(() => {
+    if (info) {
+      getGroups(info.value);
+      getNews(info.value);
+    }
+  }, [info]);
 
   return (
     <div className="home">
+      <div id="map-container" style={{ width: "0", height: "0" }}></div>
+      {/* 搜索框 */}
+      <SearchHeader amap={amap} />
       {/* 轮播图 */}
       {swiperData.length <= 0 ? null : (
         <Carousel autoplay={true} infinite>

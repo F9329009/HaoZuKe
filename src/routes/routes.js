@@ -4,6 +4,7 @@ import FindHouse from "../pages/FindHouse";
 import News from "../pages/News";
 import Profile from "../pages/Profile";
 import CityList from "../pages/CityList";
+import MapFindHouse from "../pages/MapFindHouse";
 
 import { Redirect } from "react-router-dom";
 
@@ -50,6 +51,13 @@ const routes = [
         component: CityList,
         meta: {
           title: "城市列表",
+        },
+      },
+      {
+        path: "/mapfindhouse",
+        component: MapFindHouse,
+        meta: {
+          title: "地图找房",
         },
       },
     ],

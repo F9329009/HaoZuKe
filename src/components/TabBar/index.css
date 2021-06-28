@@ -1,0 +1,9 @@
+.tabbar{
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+}
+
+.tabbar .iconfont{
+  font-size: 20px;
+}

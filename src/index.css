@@ -16,13 +16,3 @@ p{
   /* 去掉 轮播图 Chrome浏览器的错误警告 */
   touch-action: pan-y;
 }
-
-.tabbar{
-  position: fixed;
-  width: 100%;
-  bottom: 0;
-}
-
-.tabbar .iconfont{
-  font-size: 20px;
-}
