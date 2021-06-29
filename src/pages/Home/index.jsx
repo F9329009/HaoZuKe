@@ -6,6 +6,8 @@ import { HomeAPI, AreaAPI } from "../../api";
 
 import SearchHeader from "../../components/SearchHeader";
 
+import getCurrentCity from "../../utils/getCurrentCity";
+
 import "./index.css";
 
 // react 认为所有的图片都应该来自于网络
@@ -45,7 +47,7 @@ function Home(props) {
   // 获取定位信息
   const getAmap = () => {
     window.AMap.plugin("AMap.Geolocation", function () {
-      let geolocation = new window.AMap.Geolocation({
+      const geolocation = new window.AMap.Geolocation({
         enableHighAccuracy: true, //是否使用高精度定位，默认:true
         timeout: 10000, //超过10秒后停止定位，默认：5s
         GeoLocationFirst: true,
@@ -67,14 +69,17 @@ function Home(props) {
   // 获取数据
   useEffect(() => {
     if (amap.city) {
-      httpGet(AreaAPI.info, { name: amap.city })
-        .then(res => {
-          console.log("info", res);
-          if (res.status === 200) {
-            setInfo(res.body);
-          }
-        })
-        .catch(err => console.log(err));
+      // httpGet(AreaAPI.info, { name: amap.city })
+      //   .then(res => {
+      //     console.log("info", res);
+      //     if (res.status === 200) {
+      //       setInfo(res.body);
+      //     }
+      //   })
+      //   .catch(err => console.log(err));
+      getCurrentCity(CurCity => {
+        setInfo(CurCity);
+      });
     }
   }, [amap]);
   //#endregion
@@ -201,7 +206,7 @@ function Home(props) {
     <div className="home">
       <div id="map-container" style={{ width: "0", height: "0" }}></div>
       {/* 搜索框 */}
-      <SearchHeader amap={amap} />
+      <SearchHeader history={props.history} amap={amap} info={info} />
       {/* 轮播图 */}
       {swiperData.length <= 0 ? null : (
         <Carousel autoplay={true} infinite>

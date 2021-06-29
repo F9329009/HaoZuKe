@@ -2,12 +2,20 @@ import { Flex } from "antd-mobile";
 import "./index.css";
 
 function SearchHeader(props) {
+  console.log(props);
   return (
     <Flex className="search-box">
       {/* 搜索框左边 */}
       <Flex className="search">
         <div className="search-location">
-          <span>{props.amap.city}</span>
+          <span
+            onClick={() => {
+              props.history.push("/citylist");
+            }}
+          >
+            {/* {props.amap.city} */}
+            {props.info == null ? props.amap.city : props.info.label}
+          </span>
           <i class="iconfont icon-arrow" />
         </div>
         <div className="search-form">

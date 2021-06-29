@@ -7,4 +7,6 @@ export const HomeAPI = {
 
 export const AreaAPI = {
   info: "/area/info", // 根据城市名称查询该城市信息
+  city: "/area/city", // 获取城市列表数据
+  hot: "/area/hot", // 获取热门城市
 };
