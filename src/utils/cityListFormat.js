@@ -1,12 +1,17 @@
 /*
  * @Author: 九玖
  * @Date: 2021-06-29 08:39:34
- * @LastEditTime: 2021-06-29 11:47:56
+ * @LastEditTime: 2021-06-30 09:54:06
  * @LastEditors: 九玖
  * @Description: 格式化城市列表数据
  * @FilePath: \haozuke\src\utils\cityListFormat.js
  */
 
+/**
+ * 格式化城市列表数据
+ * @param {Array} list 城市列表数据
+ * @returns
+ */
 const cityListFormat = list => {
   let cityList = {};
   let cityIndex = [];
@@ -26,7 +31,6 @@ const cityListFormat = list => {
 
   cityIndex = Object.keys(cityList).sort();
 
-  console.log(cityList, cityIndex);
   return { cityList, cityIndex };
 };
 

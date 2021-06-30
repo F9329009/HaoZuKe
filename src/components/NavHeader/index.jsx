@@ -6,7 +6,7 @@ function NavHeader(props) {
 
   console.log(props);
   return (
-    <NavBar className={props.className} mode={props.mode} icon={props.icon} onLeftClick={props.onLeftClick || defaultLeftClick} rightContent={props.rightContent}>
+    <NavBar className={props.className} mode={props.mode} icon={props.icon} onLeftClick={props.onLeftClick || defaultLeftClick} rightContent={props.rightContent} style={props.style}>
       {props.children}
     </NavBar>
   );

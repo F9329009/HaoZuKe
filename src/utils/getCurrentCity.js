@@ -1,7 +1,7 @@
 /*
  * @Author: 九玖
  * @Date: 2021-06-29 09:37:53
- * @LastEditTime: 2021-06-29 10:54:22
+ * @LastEditTime: 2021-06-30 08:22:48
  * @LastEditors: 九玖
  * @Description: 获取当前城市
  * @FilePath: \haozuke\src\utils\getCurrentCity.js
@@ -12,6 +12,10 @@ import { AreaAPI } from "../api";
 
 import { getCity, setCity } from "../utils/storage";
 
+/**
+ * 获取当前城市
+ * @param {Function} callback callback 回调函数
+ */
 const getCurrentCity = callback => {
   let curCity = getCity();
   if (curCity) {
@@ -33,7 +37,9 @@ const getCurrentCity = callback => {
             .then(res => {
               if (res.status === 200) {
                 curCity = res.body;
+                // 保存到 localStorage
                 setCity(curCity);
+                // 使用 callback 回调函数异步返回数据
                 callback(curCity);
               }
             })
