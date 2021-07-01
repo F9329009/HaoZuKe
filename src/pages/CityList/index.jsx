@@ -1,6 +1,6 @@
-import { Icon } from "antd-mobile";
+import { Icon, Toast } from "antd-mobile";
 
-import { useEffect, useState } from "react";
+import { createRef, useEffect, useState } from "react";
 
 import { httpGet } from "../../utils/axios/http";
 import { AreaAPI } from "../../api";
@@ -73,6 +73,10 @@ function CityList(props) {
   }, []);
 
   //#region 城市列表
+  // 有房源的城市
+  // 有房源的城市
+  const HOUSE_CITY = ["北京", "上海", "广州", "深圳"];
+
   // 格式化标题
   const formatCityTitle = letter => {
     switch (letter) {
@@ -84,55 +88,90 @@ function CityList(props) {
         return letter.toUpperCase();
     }
   };
+  // 获取每列的列表高度
+  const getRowHeight = index => {
+    // 城市列表分类的标题高度+(50*当前分类的数组看到)
+    return 36 + 50 * cityList[cityIndex[index]].length;
+  };
+
+  // 切换城市
+  const handleChangeCity = ({ label, value }) => {
+    if (HOUSE_CITY.indexOf(label) > -1) {
+      // 有房源
+      window.localStorage.setItem("hzk_city", JSON.stringify({ label, value }));
+      props.history.go(-1);
+    } else {
+      // 无房源
+      Toast.info("该城市暂无房源数据", 1, null, false);
+    }
+  };
   // 渲染
-  const cityListRenderer = ({
+  const renderCityList = ({
     key, // 每一行在数组中的唯一标识
     index, // 索引
-    isScrolling, // 当前渲染出来的数据是否正在滚动
-    isVisible, // 当前行在列表中是否显示
     style, // 当前行的样式
   }) => {
     return (
       <div className="city" key={key} style={style}>
         <div className="title">{formatCityTitle(cityIndex[index])}</div>
         {cityList[cityIndex[index]].map(item => (
-          <div className="name">{item.label}</div>
+          <div className="name" onClick={() => handleChangeCity(item)}>
+            {item.label}
+          </div>
         ))}
       </div>
     );
   };
+  //#endregion
+
+  //#region 城市列表索引
+  // 当前高亮索引
+  const [activeIndex, setActiveIndex] = useState(0);
+  // 城市列表 Ref
+  const [listRef, setListRef] = useState(createRef());
+  // 渲染
+  const renderCityIndex = () => {
+    return cityIndex.map((item, index) => (
+      <li
+        className="city-index-item"
+        onClick={() => {
+          setActiveIndex(index);
+          listRef.current.scrollToRow(index);
+        }}
+      >
+        <span className={activeIndex === index ? "index-active" : ""}>{item === "hot" ? "热" : item.toUpperCase()}</span>
+      </li>
+    ));
+  };
+  //#endregion
 
   return (
     <div className="citylist">
-      {console.log("最终", cityList, cityIndex)}
+      {/* 顶部导航栏 */}
       <NavHeader history={props.history} mode="light" icon={<Icon type="left" />} style={{ backgroundColor: "#F6F5F6" }} children="城市列表" />
-
       {/* 城市列表 */}
       <AutoSizer>
         {({ height, width }) => (
           <List
+            ref={listRef}
             // 列表宽高
             width={width}
             height={height - 45}
             // 列表长度
             rowCount={cityIndex.length}
-            // 每列高度=城市列表分类的标题高度+(50*当前分类的数组看到)
-            rowHeight={({ index }) => 36 + 50 * cityList[cityIndex[index]].length}
+            // 每列高度
+            rowHeight={({ index }) => getRowHeight(index)}
             // 列表数据
-            rowRenderer={cityListRenderer}
+            rowRenderer={renderCityList}
+            // 渲染行的信息
+            onRowsRendered={({ startIndex }) => setActiveIndex(startIndex)}
+            // 控制滚动到行的对齐方式
+            scrollToAlignment="start"
           />
         )}
       </AutoSizer>
-
-      <AutoSizer>
-        {({ height, width }) => (
-          <ul style={{ position: "absolute", top: 45, right: 6, height: height - 45, paddingTop: 100 / cityIndex.length + "%", paddingLeft: 0, marginTop: 0, textAlign: "center" }}>
-            {cityIndex.map(item => (
-              <li style={{ listStyle: "none", height: 100 / cityIndex.length + "%" }}>{item.toUpperCase()}</li>
-            ))}
-          </ul>
-        )}
-      </AutoSizer>
+      {/* 城市列表索引 */}
+      <ul className="city-index">{renderCityIndex()}</ul>
     </div>
   );
 }

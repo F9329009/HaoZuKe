@@ -2,7 +2,8 @@ import { Flex } from "antd-mobile";
 import "./index.css";
 
 function SearchHeader(props) {
-  console.log(props);
+  const HZK_CITY = JSON.parse(window.localStorage.getItem("hzk_city"));
+
   return (
     <Flex className="search-box">
       {/* 搜索框左边 */}
@@ -13,8 +14,7 @@ function SearchHeader(props) {
               props.history.push("/citylist");
             }}
           >
-            {/* {props.amap.city} */}
-            {props.info == null ? props.amap.city : props.info.label}
+            {HZK_CITY == null ? (props.info == null ? props.amap.city : props.info.label) : HZK_CITY.label}
           </span>
           <i class="iconfont icon-arrow" />
         </div>

@@ -65,21 +65,11 @@ function Home(props) {
 
   //#region 根据城市名称查询该城市信息
   // 当前城市信息
-  const [info, setInfo] = useState(null);
+  const [info, setInfo] = useState(JSON.parse(window.localStorage.getItem("hzk_city")));
   // 获取数据
   useEffect(() => {
     if (amap.city) {
-      // httpGet(AreaAPI.info, { name: amap.city })
-      //   .then(res => {
-      //     console.log("info", res);
-      //     if (res.status === 200) {
-      //       setInfo(res.body);
-      //     }
-      //   })
-      //   .catch(err => console.log(err));
-      getCurrentCity(CurCity => {
-        setInfo(CurCity);
-      });
+      getCurrentCity(CurCity => setInfo(CurCity));
     }
   }, [amap]);
   //#endregion
