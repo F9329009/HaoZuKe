@@ -196,7 +196,7 @@ function Home(props) {
     <div className="home">
       <div id="map-container" style={{ width: "0", height: "0" }}></div>
       {/* 搜索框 */}
-      <SearchHeader history={props.history} amap={amap} info={info} />
+      <SearchHeader amap={amap} info={info} />
       {/* 轮播图 */}
       {swiperData.length <= 0 ? null : (
         <Carousel autoplay={true} infinite>

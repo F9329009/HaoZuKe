@@ -19,6 +19,7 @@ function CityList(props) {
     getCurrentCity(CurCity => {
       console.log("getCurCity", CurCity);
       const list = { cityList, cityIndex };
+      // 把当前城市添加到城市列表的 #
       list.cityList["#"] = [CurCity];
 
       setCityList({ ...cityList, ...list.cityList });
@@ -34,6 +35,7 @@ function CityList(props) {
         console.log("getHotList", res);
         if (res.status === 200) {
           const list = { cityList, cityIndex };
+          // 把热门城市数据添加到城市列表的 hot
           list.cityList["hot"] = res.body;
 
           setCityList({ ...cityList, ...list.cityList });
@@ -54,7 +56,7 @@ function CityList(props) {
         console.log("getCityList", res);
         if (res.status === 200) {
           const list = cityListFormat(res.body);
-
+          // 往 cityIndex 的前面添加 # 和 hot
           list.cityIndex.unshift("hot");
           list.cityIndex.unshift("#");
 
@@ -115,7 +117,7 @@ function CityList(props) {
       <div className="city" key={key} style={style}>
         <div className="title">{formatCityTitle(cityIndex[index])}</div>
         {cityList[cityIndex[index]].map(item => (
-          <div className="name" onClick={() => handleChangeCity(item)}>
+          <div className="name" key={item.label} onClick={() => handleChangeCity(item)}>
             {item.label}
           </div>
         ))}
@@ -134,8 +136,11 @@ function CityList(props) {
     return cityIndex.map((item, index) => (
       <li
         className="city-index-item"
+        key={index}
         onClick={() => {
+          // 设置当前高亮索引
           setActiveIndex(index);
+          // 使用 Ref 修改 CityLife 列表当前对齐的行
           listRef.current.scrollToRow(index);
         }}
       >
@@ -148,7 +153,7 @@ function CityList(props) {
   return (
     <div className="citylist">
       {/* 顶部导航栏 */}
-      <NavHeader history={props.history} mode="light" icon={<Icon type="left" />} style={{ backgroundColor: "#F6F5F6" }} children="城市列表" />
+      <NavHeader mode="light" icon={<Icon type="left" />} style={{ backgroundColor: "#F6F5F6" }} children="城市列表" />
       {/* 城市列表 */}
       <AutoSizer>
         {({ height, width }) => (

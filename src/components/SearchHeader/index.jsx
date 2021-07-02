@@ -1,4 +1,5 @@
 import { Flex } from "antd-mobile";
+import { withRouter } from "react-router-dom";
 import "./index.css";
 
 function SearchHeader(props) {
@@ -24,9 +25,9 @@ function SearchHeader(props) {
         </div>
       </Flex>
       {/* 地图找房 */}
-      <i className="iconfont icon-map" />
+      <i className="iconfont icon-map" onClick={() => props.history.push("/mapfindhouse")} />
     </Flex>
   );
 }
 
-export default SearchHeader;
+export default withRouter(SearchHeader);
