@@ -152,7 +152,6 @@ function MapFindHouse(props) {
 
       console.log("======================rect", e.target.id, data);
       // 渲染房屋列表
-
       getHouses(e.target.id);
     });
     // 渲染到页面上
