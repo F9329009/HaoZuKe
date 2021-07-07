@@ -9,14 +9,14 @@ import NavHeader from "../../components/NavHeader";
 import { AutoSizer, List } from "react-virtualized";
 
 import cityListFormat from "../../utils/cityListFormat";
-import getCurrentCity from "../../utils/getCurrentCity";
+import getCityInfo from "../../utils/getCityInfo";
 
 import "./index.css";
 
 function CityList(props) {
   //#region 当前城市
   const getCurCity = () => {
-    getCurrentCity(CurCity => {
+    getCityInfo(CurCity => {
       console.log("getCurCity", CurCity);
       const list = { cityList, cityIndex };
       // 把当前城市添加到城市列表的 #
@@ -100,6 +100,7 @@ function CityList(props) {
   const handleChangeCity = ({ label, value }) => {
     if (HOUSE_CITY.indexOf(label) > -1) {
       // 有房源
+      window.localStorage.setItem("hzk_curcity", JSON.stringify({ label, value }));
       window.localStorage.setItem("hzk_city", JSON.stringify({ label, value }));
       props.history.go(-1);
     } else {

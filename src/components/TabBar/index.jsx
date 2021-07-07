@@ -10,7 +10,7 @@ function TabBarCom(props) {
   // 当前选中的 TabBar
   const [selectedTab, setSelectedTab] = useState(props.history.location.pathname);
   // TabBar 是否隐藏
-  const [isTabBar, serIsTabBar] = useState(false);
+  const [isTabBar, serIsTabBar] = useState(true);
 
   useEffect(() => {
     // 设置当前选中的 TabBar

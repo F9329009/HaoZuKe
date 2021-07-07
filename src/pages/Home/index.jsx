@@ -6,7 +6,7 @@ import { HomeAPI, AreaAPI } from "../../api";
 
 import SearchHeader from "../../components/SearchHeader";
 
-import getCurrentCity from "../../utils/getCurrentCity";
+import getCityInfo from "../../utils/getCityInfo";
 
 import "./index.css";
 
@@ -69,7 +69,7 @@ function Home(props) {
   // 获取数据
   useEffect(() => {
     if (amap.city) {
-      getCurrentCity(CurCity => setInfo(CurCity));
+      getCityInfo(CurCity => setInfo(CurCity));
     }
   }, [amap]);
   //#endregion
