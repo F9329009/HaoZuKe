@@ -7,7 +7,7 @@ const instance = axios.create({
   // 返回数据类型
   responseType: "json",
   // 超时时间
-  timeout: 6000,
+  timeout: 10000,
   // 最大发包长度
   maxContentLength: 2000,
   // 重试次数

@@ -12,3 +12,7 @@ export const AreaAPI = {
   hot: "/area/hot", // 获取热门城市
   map: "/area/map", // 查询房源数据
 };
+
+export const HouseAPI = {
+  houses: "/houses", // 根据条件查询房屋
+};

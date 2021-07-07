@@ -1,18 +1,20 @@
 import { useState, useEffect } from "react";
 
 import { httpGet } from "../../utils/axios/http";
-import { AreaAPI } from "../../api";
+import { AreaAPI, HouseAPI } from "../../api";
 
+import { Link } from "react-router-dom";
 import { Icon, Toast } from "antd-mobile";
 
 import NavHeader from "../../components/NavHeader";
+import HouseItem from "../../components/HouseItem";
 
 import getCityInfo from "../../utils/getCityInfo";
 import getAmap from "../../utils/getAmap";
 
 import "./index.css";
 
-function MapFindHouse() {
+function MapFindHouse(props) {
   // 高德地图数据
   const [amap, setAmap] = useState(null);
   // 遮罩物数据
@@ -61,7 +63,8 @@ function MapFindHouse() {
       // 解决直辖市 city 为空的问题
       if (info.city === "") activeCity.city = activeCity.province;
 
-      if (amap.getZoom() < 12) {
+      const level = amap.getZoom();
+      if (level > 10 && level < 12) {
         // 如果区和镇没有修改则不更新城市信息
         if (!(activeCity.province !== info.province || activeCity.city !== info.city)) {
           // 更新当前城市信息
@@ -69,7 +72,7 @@ function MapFindHouse() {
           // 查询房源数据
           getCityInfo(info => getMapHouse(info.value), activeCity.city);
         }
-      } else {
+      } else if (level >= 12 && level < 14) {
         // 如果小区没有修改则不更新城市信息
         if (activeCity.district !== info.district) {
           // 更新当前城市信息
@@ -79,6 +82,9 @@ function MapFindHouse() {
         }
       }
     });
+
+    // 隐藏房屋列表
+    setIsShowList(false);
   };
   //#endregion
 
@@ -98,9 +104,6 @@ function MapFindHouse() {
 
     // 添加点击事件
     circle.on("click", e => {
-      // 使用clearMap方法删除所有覆盖物
-      amap.clearMap();
-
       //设置地图中心点
       amap.setCenter([e.lnglat.lng, e.lnglat.lat]);
 
@@ -108,7 +111,7 @@ function MapFindHouse() {
       const level = amap.getZoom();
       console.log("当前地图等级：", level);
       // 省
-      if (level >= 10 && level < 12) {
+      if (level < 12) {
         amap.setZoom(12);
         setAmapZoom(12);
       }
@@ -147,9 +150,10 @@ function MapFindHouse() {
       //设置地图中心点
       amap.setCenter([e.lnglat.lng, e.lnglat.lat]);
 
-      console.log("======================rect", e.target.id);
-      // 获取下一级数据
-      // getMapHouse(e.target.id);
+      console.log("======================rect", e.target.id, data);
+      // 渲染房屋列表
+
+      getHouses(e.target.id);
     });
     // 渲染到页面上
     amap.add(rect);
@@ -185,7 +189,7 @@ function MapFindHouse() {
     // 获取当前城市级别
     const level = amap.getZoom();
     // 判断城市级别创建不同的遮罩物样式
-    if (level >= 10 && level < 12 && curOverlaysLevel !== "province") {
+    if (level < 12 && curOverlaysLevel !== "province") {
       // 区
       curOverlaysLevel = "province";
       createOverlays("province");
@@ -198,6 +202,54 @@ function MapFindHouse() {
       curOverlaysLevel = "districts";
       createOverlays("district");
     }
+  };
+  //#endregion
+
+  // 房屋列表数据
+  const [housesList, setHouseList] = useState([]);
+  // 是否显示房屋列表
+  const [isShowList, setIsShowList] = useState(false);
+
+  //#region 获取房屋列表数据
+  const getHouses = id => {
+    // 开启loading
+    Toast.loading("加载中...", 0, null, false);
+    console.log(HouseAPI.houses, { cityId: id });
+    // 发请求
+    httpGet(HouseAPI.houses, { cityId: id })
+      .then(res => {
+        console.log("getHouses", res);
+        if (res.status === 200) {
+          setHouseList(res.body.list);
+
+          // 显示房屋列表
+          setIsShowList(true);
+
+          // 关闭 loading
+          Toast.hide();
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        // 关闭 loading
+        Toast.hide();
+      });
+  };
+  //#endregion
+
+  //#region 渲染房源列表
+  const renderHousesList = () => {
+    return housesList.map(item => (
+      <HouseItem
+        onClick={() => props.history.push(`/detail/${item.houseCode}`)}
+        key={item.houseCode}
+        src={process.env.REACT_APP_URL + item.houseImg}
+        title={item.title}
+        desc={item.desc}
+        tags={item.tags}
+        price={item.price}
+      />
+    ));
   };
   //#endregion
 
@@ -249,7 +301,7 @@ function MapFindHouse() {
   //   console.log("useEffect(amapZoom)：amapCity", amapCity, "amapZoom", amapZoom, "curOverlaysLevel", curOverlaysLevel);
   //   if (amapCity) {
   //     // 判断城市级别创建不同的覆盖物样式
-  //     if (amapZoom >= 10 && amapZoom < 12 && curOverlaysLevel !== "city") {
+  //     if (amapZoom < 12 && curOverlaysLevel !== "city") {
   //       // 镇
   //       getCityInfo(info => getMapHouse(info.value), amapCity.city);
   //     } else if (amapZoom >= 12 && amapZoom < 14 && curOverlaysLevel !== "district") {
@@ -268,9 +320,9 @@ function MapFindHouse() {
   }, [overlaysData]);
 
   useEffect(() => {
-    console.log(amapZoom, amapCity, amapCenter, overlaysData);
+    console.log(amapZoom, amapCity, amapCenter, overlaysData, housesList);
     console.log("===============================================================");
-  }, [amapZoom, amapCity, amapCenter, overlaysData]);
+  }, [amapZoom, amapCity, amapCenter, overlaysData, housesList]);
 
   return (
     <div>
@@ -278,9 +330,21 @@ function MapFindHouse() {
       <NavHeader mode="light" icon={<Icon type="left" />} children="地图找房" />
       {/* 地图 */}
       <div id="map-container" style={{ width: document.documentElement.clientWidth, height: document.documentElement.clientHeight - 45 }}></div>
-      <div className="map-status">
-        <div id="status"></div>
-        <div id="result"></div>
+
+      {/* 房源列表 */}
+      {/* 添加 styles.show 展示房屋列表 */}
+      <div className={["houseList", isShowList ? "show" : ""].join(" ")}>
+        <div className="titleWrap">
+          <h1 className="listTitle">房屋列表</h1>
+          <Link className="titleMore" to="/findhouse">
+            更多房源
+          </Link>
+        </div>
+
+        <div className="houseItems">
+          {/* 房屋结构 */}
+          {renderHousesList()}
+        </div>
       </div>
     </div>
   );
