@@ -149,6 +149,7 @@ function MapFindHouse(props) {
     rect.on("click", e => {
       //设置地图中心点
       amap.setCenter([e.lnglat.lng, e.lnglat.lat]);
+      amap.panBy(0, -150);
 
       console.log("======================rect", e.target.id, data);
       // 渲染房屋列表
