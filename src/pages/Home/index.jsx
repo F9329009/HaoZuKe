@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Carousel, WingBlank, Flex, Grid } from "antd-mobile";
 
 import { httpGet } from "../../utils/axios/http";
-import { HomeAPI, AreaAPI } from "../../api";
+import { HomeAPI } from "../../api";
 
 import SearchHeader from "../../components/SearchHeader";
 

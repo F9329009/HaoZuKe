@@ -20,6 +20,48 @@ function MapFindHouse(props) {
   // 遮罩物数据
   const [overlaysData, setOverlaysData] = useState([]);
 
+  useEffect(() => {
+    // 获取当前城市信息
+    const HZK_CITY = JSON.parse(window.localStorage.getItem("hzk_city"));
+    if (HZK_CITY) {
+      // 获取高德地图数据
+      getAmap(map => {
+        setAmap(map);
+      }, HZK_CITY.label);
+      // 查询房源数据
+      getMapHouse(HZK_CITY.value);
+    } else {
+      getCityInfo(CurCity => {
+        // 获取高德地图数据
+        getAmap(map => {
+          setAmap(map);
+        });
+        // 查询房源数据
+        getMapHouse(CurCity.value);
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (amap) {
+      // 绑定地图移动与缩放事件
+      amap.on("moveend", () => {
+        // 设置当前城市信息
+        amap.getCity(info => {
+          console.log("moveend(info)", info);
+          getMapinfo(info);
+        });
+      });
+      amap.on("zoomend", () => {
+        // 设置当前城市信息
+        amap.getCity(info => {
+          console.log("zoomend(info)", info, amapCity);
+          getMapinfo(info);
+        });
+      });
+    }
+  }, [amap]);
+
   //#region 查询房源数据
   const getMapHouse = id => {
     // 开启loading
@@ -203,6 +245,14 @@ function MapFindHouse(props) {
       createOverlays("district");
     }
   };
+
+  useEffect(() => {
+    // 判断数组是否有内容
+    if (overlaysData.length > 0) {
+      // 渲染覆盖物
+      renderOverlays();
+    }
+  }, [overlaysData]);
   //#endregion
 
   // 房屋列表数据
@@ -253,50 +303,6 @@ function MapFindHouse(props) {
   };
   //#endregion
 
-  useEffect(() => {
-    // 获取当前城市信息
-    const HZK_CITY = JSON.parse(window.localStorage.getItem("hzk_city"));
-    if (HZK_CITY) {
-      // 获取高德地图数据
-      getAmap(map => {
-        setAmap(map);
-      }, HZK_CITY.label);
-      // 查询房源数据
-      getMapHouse(HZK_CITY.value);
-    } else {
-      getCityInfo(CurCity => {
-        // 获取高德地图数据
-        getAmap(map => {
-          setAmap(map);
-        });
-        // 查询房源数据
-        getMapHouse(CurCity.value);
-      });
-    }
-  }, []);
-
-  useEffect(() => {
-    if (amap) {
-      console.log("--------------------------------");
-
-      // 绑定地图移动与缩放事件
-      amap.on("moveend", () => {
-        // 设置当前城市信息
-        amap.getCity(info => {
-          console.log("moveend(info)", info);
-          getMapinfo(info);
-        });
-      });
-      amap.on("zoomend", () => {
-        // 设置当前城市信息
-        amap.getCity(info => {
-          console.log("zoomend(info)", info, amapCity);
-          getMapinfo(info);
-        });
-      });
-    }
-  }, [amap]);
-
   // useEffect(() => {
   //   console.log("useEffect(amapZoom)：amapCity", amapCity, "amapZoom", amapZoom, "curOverlaysLevel", curOverlaysLevel);
   //   if (amapCity) {
@@ -310,14 +316,6 @@ function MapFindHouse(props) {
   //     }
   //   }
   // }, [amapZoom]);
-
-  useEffect(() => {
-    // 判断数组是否有内容
-    if (overlaysData.length > 0) {
-      // 渲染覆盖物
-      renderOverlays();
-    }
-  }, [overlaysData]);
 
   useEffect(() => {
     console.log(amapZoom, amapCity, amapCenter, overlaysData, housesList);
