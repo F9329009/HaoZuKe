@@ -1,7 +1,7 @@
 /*
  * @Author: 九玖
  * @Date: 2021-07-07 08:49:39
- * @LastEditTime: 2021-07-07 08:52:22
+ * @LastEditTime: 2021-07-09 08:11:15
  * @LastEditors: 九玖
  * @Description: 小区关键词查询
  * @FilePath: \haozuke\src\utils\getCommunity.js
@@ -22,7 +22,7 @@ const getCommunity = (callback, community) => {
     .then(res => {
       if (res.status === 200) {
         // 使用 callback 回调函数异步返回数据
-        callback(res.body);
+        callback && callback(res.body);
       }
     })
     .catch(err => console.log(err));

@@ -15,4 +15,5 @@ export const AreaAPI = {
 
 export const HouseAPI = {
   houses: "/houses", // 根据条件查询房屋
+  condition: "/houses/condition", // 获取房屋查询条件
 };

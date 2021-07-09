@@ -1,10 +1,10 @@
 /*
  * @Author: 九玖
  * @Date: 2021-06-29 09:37:53
- * @LastEditTime: 2021-07-05 17:24:09
+ * @LastEditTime: 2021-07-09 08:11:05
  * @LastEditors: 九玖
  * @Description: 获取城市信息
- * @FilePath: \haozuke\src\utils\getCity.js
+ * @FilePath: \haozuke\src\utils\getCityInfo.js
  */
 
 import { httpGet } from "./axios/http";
@@ -54,7 +54,7 @@ const getCityInfo = (callback, city) => {
           // 保存到 localStorage
           setCity(curCity);
           // 使用 callback 回调函数异步返回数据
-          callback(curCity);
+          callback && callback(curCity);
         }
       })
       .catch(err => console.log(err));

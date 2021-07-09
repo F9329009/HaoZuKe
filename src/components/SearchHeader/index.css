@@ -1,11 +1,13 @@
+/* 顶部导航 */
 .search-box {
   position: absolute;
   top: 25px;
   width: 100%;
   padding: 0 10px;
-  z-index: 10;
+  z-index: 1;
 }
 
+/* 左侧白色区域 */
 .search {
   flex: 1;
   height: 34px;
@@ -15,6 +17,7 @@
   background-color: #fff;
 }
 
+/* 位置 */
 .search-location .icon-arrow {
     margin-left: 2px;
     font-size: 12px;
@@ -28,6 +31,7 @@
   line-height: 16px;
 }
 
+/* 搜索表单 */
 .search-form .icon-seach {
   vertical-align: middle;
   padding: 0 2px 0 12px;
@@ -41,6 +45,7 @@
   color: #9c9fa1;
 }
 
+/* 右侧地图图标 */
 .icon-map {
   font-size: 25px;
   color: #fff;

@@ -1,12 +1,13 @@
 import { Flex } from "antd-mobile";
 import { withRouter } from "react-router-dom";
+import PropTypes from "prop-types";
 import "./index.css";
 
 function SearchHeader(props) {
   const HZK_CITY = JSON.parse(window.localStorage.getItem("hzk_city"));
 
   return (
-    <Flex className="search-box">
+    <Flex className={["search-box", props.className || ""].join(" ")}>
       {/* 搜索框左边 */}
       <Flex className="search">
         <div className="search-location">
@@ -15,9 +16,9 @@ function SearchHeader(props) {
               props.history.push("/citylist");
             }}
           >
-            {HZK_CITY == null ? (props.info == null ? props.amap.city : props.info.label) : HZK_CITY.label}
+            {props.cityName != null ? props.cityName : HZK_CITY != null ? HZK_CITY.label : ""}
           </span>
-          <i class="iconfont icon-arrow" />
+          <i className="iconfont icon-arrow" />
         </div>
         <div className="search-form">
           <i className="iconfont icon-seach" />
@@ -29,5 +30,10 @@ function SearchHeader(props) {
     </Flex>
   );
 }
+// 添加属性校验
+SearchHeader.propTypes = {
+  cityName: PropTypes.string,
+  className: PropTypes.string,
+};
 
 export default withRouter(SearchHeader);

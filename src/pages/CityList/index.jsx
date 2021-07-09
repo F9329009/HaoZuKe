@@ -100,7 +100,6 @@ function CityList(props) {
   const handleChangeCity = ({ label, value }) => {
     if (HOUSE_CITY.indexOf(label) > -1) {
       // 有房源
-      window.localStorage.setItem("hzk_curcity", JSON.stringify({ label, value }));
       window.localStorage.setItem("hzk_city", JSON.stringify({ label, value }));
       props.history.go(-1);
     } else {

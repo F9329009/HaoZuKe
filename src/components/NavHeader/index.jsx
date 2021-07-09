@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 
 import PropTypes from "prop-types";
 
-import Styles from "./index.module.css";
+import styles from "./index.module.css";
 
 function NavHeader(props) {
   // 左边图标默认点击事件
@@ -11,7 +11,7 @@ function NavHeader(props) {
 
   return (
     <NavBar
-      className={[Styles.navBar, props.className || ""].join(" ")}
+      className={[styles.navBar, props.className || ""].join(" ")}
       mode={props.mode}
       icon={props.icon}
       onLeftClick={props.onLeftClick || defaultLeftClick}
