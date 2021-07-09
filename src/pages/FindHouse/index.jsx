@@ -141,7 +141,6 @@ function FindHouse(props) {
   };
   // 渲染房屋列表
   const renderList = () => {
-    // const { count, isLoading } = this.state
     // 关键点：在数据加载完成后，再进行 count 的判断
     // 解决方式：如果数据加载中，则不展示 NoHouse 组件；而，但数据加载完成后，再展示 NoHouse 组件
     if (housesCount === 0 && housesList.length <= 0) {
