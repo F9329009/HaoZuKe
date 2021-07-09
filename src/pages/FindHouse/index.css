@@ -10,11 +10,12 @@
   color: #999;
 }
 
-/* 覆盖 SearchHeader 组件的样式： */
+/* 覆盖 SearchHeader 组件的样式 */
 .search-header {
   position: relative;
   top: 0;
   padding: 0;
+
 }
 
 .search-header .icon-map {
@@ -30,7 +31,7 @@
   padding: 0 15px;
 }
 
-.house-items :global(.ReactVirtualized__List) {
+.house-items .ReactVirtualized__List {
   padding-bottom: 50px;
 }
 

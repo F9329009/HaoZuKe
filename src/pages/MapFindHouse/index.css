@@ -3,7 +3,7 @@
   height: 100%;
 }
 
-/* 区、镇的覆盖物样式： */
+/* 区、镇的覆盖物样式 */
 .bubble {
   width: 70px;
   height: 70px;
@@ -22,7 +22,7 @@
   padding: 18px 0 6px 0;
 }
 
-/* 小区的覆盖物样式： */
+/* 小区的覆盖物样式 */
 .rect {
   height: 20px;
   line-height: 19px;
@@ -60,7 +60,7 @@
   width: 30px;
 }
 
-/* 房源列表样式： */
+/* 房源列表样式 */
 .houseList {
   position: fixed;
   bottom: 0;

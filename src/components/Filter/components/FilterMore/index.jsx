@@ -33,7 +33,6 @@ function FilterMore(props) {
 
   //#region 渲染标签
   const renderFilters = data => {
-    // 高亮类名：tagActive
     return data.map(item => {
       const isSelected = selectedValues.indexOf(item.value) > -1;
 

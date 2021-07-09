@@ -62,9 +62,10 @@ function FindHouse(props) {
   // 房屋列表数据
   const [housesList, setHouseList] = useState([]);
   // 房源数量
-  const [housesCount, setHouseCount] = useState(0);
+  const [housesCount, setHouseCount] = useState(-1);
   // 初始化城市ID
-  let cityId = "";
+  let cityId = JSON.parse(window.localStorage.getItem("hzk_city")).value || "";
+  // 筛选条件数据
   let filters = {};
   const searchHouseList = () => {
     // 开启loading
@@ -93,8 +94,8 @@ function FindHouse(props) {
   const isRowLoaded = ({ index }) => {
     return !!housesList[index];
   };
-  // 用来获取更多房屋列表数据
-  // 注意：该方法的返回值是一个 Promise 对象，并且，这个对象应该在数据加载完成时，来调用 resolve 让Promise对象的状态变为已完成。
+  // 获取更多房屋列表数据
+  // 该方法的返回值是一个 Promise 对象
   const loadMoreRows = ({ startIndex, stopIndex }) => {
     return new Promise(resolve => {
       httpGet(HouseAPI.houses, { cityId: cityId, ...filters, start: startIndex, end: stopIndex })
@@ -103,7 +104,7 @@ function FindHouse(props) {
           if (res.status == 200) {
             setHouseList([...housesList, ...res.body.list]);
 
-            // 数据加载完成时，调用 resolve 即可
+            // 数据加载完成时，调用 resolve 即可让Promise对象的状态变为已完成
             resolve();
           }
         })
@@ -129,7 +130,7 @@ function FindHouse(props) {
       <HouseItem
         key={key}
         onClick={() => props.history.push(`/detail/${house.houseCode}`)}
-        // 注意：该组件中应该接收 style，然后给组件元素设置样式！！！
+        // 该组件中接收 style，然后给组件元素设置样式
         style={style}
         src={process.env.REACT_APP_URL + house.houseImg}
         title={house.title}
@@ -141,9 +142,9 @@ function FindHouse(props) {
   };
   // 渲染房屋列表
   const renderList = () => {
-    // 关键点：在数据加载完成后，再进行 count 的判断
-    // 解决方式：如果数据加载中，则不展示 NoHouse 组件；而，但数据加载完成后，再展示 NoHouse 组件
-    if (housesCount === 0 && housesList.length <= 0) {
+    // housesCount 默认值为 -1,表示数据为加载完成，则不展示 NoHouse 组件
+    // 如果 housesCount 不等于 -1 则表示数据加载完成，并且数量为 0，再展示 NoHouse 组件
+    if (housesCount !== -1 && housesCount === 0) {
       return <NoHouse>没有找到房源，请您换个搜索条件吧~</NoHouse>;
     }
 
@@ -157,12 +158,18 @@ function FindHouse(props) {
                   <List
                     onRowsRendered={onRowsRendered}
                     ref={registerChild}
-                    autoHeight // 设置高度为 WindowScroller 最终渲染的列表高度
-                    width={width} // 视口的宽度
-                    height={height} // 视口的高度
-                    rowCount={housesCount} // List列表项的行数
-                    rowHeight={120} // 每一行的高度
-                    rowRenderer={renderHouseList} // 渲染列表项中的每一行
+                    // 设置高度为 WindowScroller 最终渲染的列表高度
+                    autoHeight
+                    // 视口的宽度
+                    width={width}
+                    // 视口的高度
+                    height={height}
+                    // List列表项的行数(解决数据未加载完成索引越界问题)
+                    rowCount={housesCount === -1 ? 0 : housesCount}
+                    // 每一行的高度
+                    rowHeight={120}
+                    // 渲染列表项中的每一行
+                    rowRenderer={renderHouseList}
                     isScrolling={isScrolling}
                     scrollTop={scrollTop}
                   />
@@ -180,9 +187,8 @@ function FindHouse(props) {
   const onFilter = f => {
     // 返回页面顶部
     window.scrollTo(0, 0);
-
+    // 设置筛选条件数据
     filters = f;
-
     // 调用获取房屋数据的方法
     searchHouseList();
   };
@@ -192,7 +198,6 @@ function FindHouse(props) {
       {/* 顶部搜索导航 */}
       <Flex className="header">
         <i className="iconfont icon-back" onClick={() => props.history.go(-1)} />
-        {/* <SearchHeader className="searchHeader" cityName={amap.city} /> */}
         <SearchHeader className="search-header" cityName={info == null ? amap.city : info.label} />
       </Flex>
       {/* 条件筛选栏 */}

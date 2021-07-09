@@ -65,9 +65,6 @@ function Filter(props) {
 
   //#region 点击标题菜单实现高亮
   const onTitleClick = type => {
-    console.log(type);
-    // props.onFilter();
-
     // 给 body 添加样式
     document.body.className = "body-fixed";
 
@@ -84,7 +81,7 @@ function Filter(props) {
         return;
       }
 
-      // 其他标题：
+      // 其他标题
       const selectedVal = selectedValues[key];
       if (key === "area" && (selectedVal.length !== 2 || selectedVal[0] !== "area")) {
         // 高亮
@@ -155,12 +152,10 @@ function Filter(props) {
         break;
     }
 
-    console.log("renderFilterPicker==data", data);
-
     return <FilterPicker key={openType} onCancel={onCancel} onSave={onSave} data={data} cols={cols} type={openType} defaultValue={defaultValue} />;
   };
 
-  // 取消（隐藏对话框）
+  // 取消(隐藏对话框)
   const onCancel = type => {
     document.body.className = "";
 
@@ -191,7 +186,7 @@ function Filter(props) {
     setTitleSelectedStatus(newTitleSelectedStatus);
   };
 
-  // 确定（隐藏对话框）
+  // 确定(隐藏对话框)
   const onSave = (type, value) => {
     document.body.className = "";
 
@@ -218,11 +213,11 @@ function Filter(props) {
 
     /*
       组装筛选条件：
-      1 在 Filter 组件的 onSave 方法中，根据最新 selectedValues 组装筛选条件数据 filters。
-      2 获取区域数据的参数名：area 或 subway（选中值数组的第一个元素）。
-      3 获取区域数据的值（以最后一个 value 为准）。
-      4 获取方式和租金的值（选中值的第一个元素）。
-      5 获取筛选（more）的值（将选中值数组转化为以逗号分隔的字符串）。
+      1 在 Filter 组件的 onSave 方法中，根据最新 selectedValues 组装筛选条件数据 filters
+      2 获取区域数据的参数名：area 或 subway(选中值数组的第一个元素)
+      3 获取区域数据的值(以最后一个 value 为准)
+      4 获取方式和租金的值(选中值的第一个元素)
+      5 获取筛选 more 的值(将选中值数组转化为以逗号分隔的字符串)
 
       {
         area: 'AREA|67fad918-f2f8-59df', // 或 subway: '...'
@@ -280,7 +275,7 @@ function Filter(props) {
     return (
       <Spring from={{ opacity: 0 }} to={{ opacity: isHide ? 0 : 1 }}>
         {props => {
-          // 说明遮罩层已经完成动画效果，隐藏了
+          // 遮罩层已经完成动画效果(隐藏)
           if (props.opacity === 0) {
             return null;
           }
@@ -299,9 +294,9 @@ function Filter(props) {
       <div className={styles.content}>
         {/* 标题栏 */}
         <FilterTitle titleSelectedStatus={titleSelectedStatus} onClick={onTitleClick} />
-        {/* 前三个菜单对应的内容： */}
+        {/* 前三个菜单对应的内容 */}
         {renderFilterPicker()}
-        {/* 最后一个菜单对应的内容： */}
+        {/* 第四个菜单对应的内容 */}
         {renderFilterMore()}
       </div>
     </div>
